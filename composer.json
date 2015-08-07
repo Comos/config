@@ -1,0 +1,15 @@
+{
+    "name": "comos/config",
+    "type": "library",
+    "authors": [
+        {
+            "name": "zhaoqing2",
+            "email": "zhaoqing2@staff.sina.com.cn"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Comos\\Config\\": "src"}
+    },
+    "require": {
+    }
+}
