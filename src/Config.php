@@ -144,14 +144,14 @@ class Config
         }
 
         if (is_int($value) || is_float($value)) {
-            return boolval($value);
+            return (bool)$value;
         }
 
         if (is_string($value)) {
             if (strlen($value) == 5 && strtolower($value) == 'false') {
                 return false;
             }
-            return boolval($value);
+            return (bool)$value;
         }
 
         throw new Exception('type error, field: ' . $key);
