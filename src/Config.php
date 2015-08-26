@@ -53,7 +53,7 @@ class Config
     protected function genSub($key)
     {
         if (!\array_key_exists($key, $this->data)) {
-            return self::fromArray([]);
+            return self::fromArray(array());
         }
         $arr = $this->data[$key];
         if (is_array($arr)) {
