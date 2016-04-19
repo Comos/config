@@ -13,8 +13,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testFromArray()
     {
-        $this->assertTrue(Config::fromArray(array('a' => 1)) instanceof Config);
-        $this->assertTrue(Config::fromArray(new \ArrayObject(array('a' => 1))) instanceof Config);
+        $this->assertTrue(Config::fromArray(['a' => 1]) instanceof Config);
+        $this->assertTrue(Config::fromArray(new \ArrayObject(['a' => 1])) instanceof Config);
     }
 
     /**
@@ -36,27 +36,32 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function getParamMethodsProvider()
     {
-        return array(
+        return [
             //$method, $data, $key, $default, $expectedValue
-            array('str', array('a' => '1', 'b' => 2), 'a', null, '1'),
-            array('str', array('a' => '1', 'b' => 2), 'b', null, '2'),
-            array('str', array('a' => '1', 'b' => 2), 'c', null, null),
-            array('str', array('a' => '1', 'b' => 2), 'c', 'x', 'x'),
-            array('str', array('a', 'b', 'c'), 2, null, 'c'),
-            array('str', array('a', 'b', 'c'), '2', null, 'c'),
-            array('int', array('a' => 1), 'a', null, 1),
-            array('int', array('a' => 1.0), 'a', null, 1),
-            array('int', array('a' => "1.0"), 'a', null, 1),
-            array('int', array('a' => "1.0"), 'b', null, null),
-            array('float', array('a' => "1.0"), 'a', null, 1.0),
-            array('float', array('a' => "1.0"), 'b', 1.1, 1.1),
-            array('float', array('c' => 2), 'c', 1.1, 2.0),
-            array('float', array('c' => 2), 'c', 1.1, 2.0),
-            array('float', array('c' => 0), 'c', 1.1, 0.0),
-            array('bool', array('c' => 0), 'c', null, false),
-            array('bool', array('c' => 'true'), 'c', null, true),
-            array('bool', array('c' => 'False'), 'c', null, false),
-        );
+            ['str', ['a' => '1', 'b' => 2], 'a', null, '1'],
+            ['str', ['a' => '1', 'b' => 2], 'b', null, '2'],
+            ['str', ['a' => '1', 'b' => 2], 'c', null, null],
+            ['str', ['a' => new __StringObj(), 'b' => 2], 'a', null, 'x'],
+            ['str', ['a' => '1', 'b' => 2], 'c', 'x', 'x'],
+            ['str', ['a', 'b', 'c'], 2, null, 'c'],
+            ['str', ['a', 'b', 'c'], '2', null, 'c'],
+            ['int', ['a' => 1], 'a', null, 1],
+            ['int', ['a' => 1.0], 'a', null, 1],
+            ['int', ['a' => "1.0"], 'a', null, 1],
+            ['int', ['a' => "1.0"], 'b', null, null],
+            ['float', ['a' => "1.0"], 'a', null, 1.0],
+            ['float', ['a' => "1.0"], 'b', 1.1, 1.1],
+            ['float', ['c' => 2], 'c', 1.1, 2.0],
+            ['float', ['c' => 2], 'c', 1.1, 2.0],
+            ['float', ['c' => 0], 'c', 1.1, 0.0],
+            ['bool', ['c' => 0], 'c', null, false],
+            ['bool', ['c' => 'true'], 'c', null, true],
+            ['bool', ['c' => true], 'c', null, true],
+            ['bool', ['c' => 1], 'c', null, true],
+            ['bool', ['d' => false], 'd', null, false],
+            ['bool', ['d' => 0], 'd', null, false],
+            ['bool', ['c' => 'False'], 'c', null, false],
+        ];
     }
 
     /**
@@ -71,18 +76,18 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderForTestGetParamMethods_TypeError()
     {
-        return array(
-            array('rint', array('a' => 'x'), 'a'),
-            array('rint', array('a' => array()), 'a'),
-            array('int', array('a' => false), 'a'),
-            array('int', array('a' => 'x'), 'a'),
-            array('float', array('a' => array()), 'a'),
-            array('float', array('a' => new \stdClass()), 'a'),
-            array('float', array('a' => true), 'a'),
-            array('bool', array('a' => array()), 'a'),
-            array('rbool', array('a' => array()), 'a'),
-            array('bool', array('a' => new \stdClass()), 'a'),
-        );
+        return [
+            ['rint', ['a' => 'x'], 'a'],
+            ['rint', ['a' => []], 'a'],
+            ['int', ['a' => false], 'a'],
+            ['int', ['a' => 'x'], 'a'],
+            ['float', ['a' => []], 'a'],
+            ['float', ['a' => new \stdClass()], 'a'],
+            ['float', ['a' => true], 'a'],
+            ['bool', ['a' => []], 'a'],
+            ['rbool', ['a' => []], 'a'],
+            ['bool', ['a' => new \stdClass()], 'a'],
+        ];
     }
 
     /**
@@ -96,17 +101,17 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function getParamMethodsProvider_RestrictMode_MissRequiredField_DataProvider()
     {
-        return array(
+        return [
             //$method, $data, $key
-            array('rstr', array('a' => '1', 'b' => 2), 'c'),
-            array('rstr', array('a' => '1', 'b' => 2), 'x'),
-            array('rstr', array('a', 'b', 'c'), 3),
-            array('rstr', array('a', 'b', null), 2),
-            array('rint', array('a' => 1), 'c'),
-            array('rint', array('a', 'x'), 3),
-            array('rfloat', array('a', 'x'), 3),
-            array('rbool', array('a', 'x'), 3),
-        );
+            ['rstr', ['a' => '1', 'b' => 2], 'c'],
+            ['rstr', ['a' => '1', 'b' => 2], 'x'],
+            ['rstr', ['a', 'b', 'c'], 3],
+            ['rstr', ['a', 'b', null], 2],
+            ['rint', ['a' => 1], 'c'],
+            ['rint', ['a', 'x'], 3],
+            ['rfloat', ['a', 'x'], 3],
+            ['rbool', ['a', 'x'], 3],
+        ];
     }
 
     /**
@@ -124,36 +129,97 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderForGetParamMethods_RestrictMode()
     {
-        return array(
+        return [
             //$method, $data, $key, $expectedValue
-            array('rstr', array('a' => '1', 'b' => 2), 'b', '2'),
-            array('rstr', array('a' => '1', 'b' => 2), 'a', '1'),
-            array('rstr', array('a', 'b', 'c'), 2, 'c'),
-            array('rint', array('a', '2', null), 1, 2),
-            array('rint', array('a', '2', null), 1, 2),
-            array('rfloat', array('a' => '2'), 'a', 2.0),
-            array('rfloat', array('a' => 2), 'a', 2.0),
-            array('rfloat', array('a' => '2.1'), 'a', 2.1),
-            array('rfloat', array('a' => -1.111), 'a', -1.111),
-            array('rbool', array('a' => 'x'), 'a', true),
-            array('rbool', array('a' => '1'), 'a', true),
-            array('rbool', array('a' => '0'), 'a', false),
-            array('rbool', array('a' => 0), 'a', false),
-        );
+            ['rstr', ['a' => '1', 'b' => 2], 'b', '2'],
+            ['rstr', ['a' => '1', 'b' => 2], 'a', '1'],
+            ['rstr', ['a' => new __StringObj(), 'b' => 2], 'a', 'x'],
+            ['rstr', ['a', 'b', 'c'], 2, 'c'],
+            ['rint', ['a', '2', null], 1, 2],
+            ['rint', ['a', '2', null], 1, 2],
+            ['rfloat', ['a' => '2'], 'a', 2.0],
+            ['rfloat', ['a' => 2], 'a', 2.0],
+            ['rfloat', ['a' => '2.1'], 'a', 2.1],
+            ['rfloat', ['a' => -1.111], 'a', -1.111],
+            ['rbool', ['a' => 'x'], 'a', true],
+            ['rbool', ['a' => '1'], 'a', true],
+            ['rbool', ['a' => '0'], 'a', false],
+            ['rbool', ['a' => 0], 'a', false],
+        ];
     }
 
     public function testSub()
     {
-        $data = array(
+        $data = [
             'a' => 1,
-            'b' => array('2', 3, 4),
-            'c' => array('a' => 1, 'b' => array('x' => 1, 'y' => 3)),
+            'b' => ['2', 3, 4],
+            'c' => ['a' => 1, 'b' => ['x' => 1, 'y' => 3]],
             'd' => null,
-        );
+            'e' => (object)['f'=>true]
+        ];
         $conf = Config::fromArray($data);
         $this->assertTrue($conf->sub('b') === $conf->sub('b'));
         $this->assertEquals(1, $conf->int('a'));
         $this->assertEquals('2', $conf->sub('b')->str(0));
         $this->assertEquals('3', $conf->sub('c')->sub('b')->str('y'));
+        $this->assertInstanceOf(Config::class, $conf->sub('x'));
+        $this->assertNull($conf->sub('x')->str('a'));
+        $this->assertEquals(true, $conf->sub('e')->bool('f'));
+    }
+
+    public function testRsub()
+    {
+        $data = [
+            'a' => 1,
+            'b' => ['2', 3, 4],
+            'c' => ['a' => 1, 'b' => ['x' => 1, 'y' => 3]],
+            'd' => null,
+        ];
+        $conf = Config::fromArray($data);
+        $this->assertTrue($conf->rsub('b') === $conf->rsub('b'));
+        $this->assertEquals('2', $conf->rsub('b')->str(0));
+        $this->assertEquals('3', $conf->rsub('c')->rsub('b')->str('y'));
+
+        try {
+            $conf->rsub('a');
+            $this->fail('expects Exception');
+        } catch (Exception $ex) {
+            $this->assertEquals('type error, expects array or object. FIELD[a]', $ex->getMessage());
+        }
+
+        try {
+            $conf->rsub('x');
+            $this->fail('expects Exception');
+        } catch (Exception $ex) {
+            $this->assertEquals('sub node does not exist. FIELD[x]', $ex->getMessage());
+        }
+    }
+
+    public function testGetKeys()
+    {
+        $data = [
+            'a' => 1,
+            'b' => ['2', 3, 4],
+            'c' => ['a' => 1, 'b' => ['x' => 1, 'y' => 3]],
+            'd' => null,
+        ];
+        $conf = Config::fromArray($data);
+        $this->assertEquals(['a', 'b', 'c', 'd'], $conf->keys());
+    }
+
+    public function testGetRawData()
+    {
+        $data = ['a' => 1, 'b'=>['x'=>'y']];
+        $conf = Config::fromArray($data);
+        $this->assertEquals($data, $conf->rawData());
+        $this->assertEquals(['x'=>'y'], $conf->sub('b')->rawData());
+    }
+
+}
+
+class __StringObj {
+    public function __toString()
+    {
+        return 'x';
     }
 }

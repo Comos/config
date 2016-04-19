@@ -1,15 +1,17 @@
 {
     "name": "comos/config",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
-            "name": "zhaoqing2",
-            "email": "zhaoqing2@staff.sina.com.cn"
+            "name": "Alex Chao",
+            "email": "alex.q.chao@gmail.com"
         }
     ],
     "autoload": {
         "psr-4": {"Comos\\Config\\": "src"}
     },
     "require": {
+        "php":">5.5"
     }
 }

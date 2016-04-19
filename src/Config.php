@@ -42,6 +42,13 @@ class Config
         $this->data = $data;
     }
 
+    public function rsub($key) {
+        if (!isset($this->subs[$key])) {
+            $this->subs[$key] = $this->genSub($key, true);
+        }
+        return $this->subs[$key];
+    }
+
     public function sub($key)
     {
         if (!isset($this->subs[$key])) {
@@ -50,10 +57,21 @@ class Config
         return $this->subs[$key];
     }
 
-    protected function genSub($key)
+    /**
+     * @return array
+     */
+    public function keys()
+    {
+        return array_keys($this->data);
+    }
+
+    protected function genSub($key, $restrict = false)
     {
         if (!\array_key_exists($key, $this->data)) {
-            return self::fromArray(array());
+            if ($restrict) {
+                throw new Exception('sub node does not exist. FIELD['.$key.']');
+            }
+            return self::fromArray([]);
         }
         $arr = $this->data[$key];
         if (is_array($arr)) {
@@ -62,7 +80,7 @@ class Config
         if (is_object($arr)) {
             return self::fromArray((array)$arr);
         }
-        throw new Exception('type error, expects array or object, field: ' . $key);
+        throw new Exception('type error, expects array or object. FIELD[' . $key.']');
     }
 
     /**
@@ -144,14 +162,14 @@ class Config
         }
 
         if (is_int($value) || is_float($value)) {
-            return (bool)$value;
+            return boolval($value);
         }
 
         if (is_string($value)) {
             if (strlen($value) == 5 && strtolower($value) == 'false') {
                 return false;
             }
-            return (bool)$value;
+            return boolval($value);
         }
 
         throw new Exception('type error, field: ' . $key);
@@ -213,4 +231,10 @@ class Config
         return $value;
     }
 
+    /**
+     * @return array
+     */
+    public function rawData() {
+        return $this->data;
+    }
 }
